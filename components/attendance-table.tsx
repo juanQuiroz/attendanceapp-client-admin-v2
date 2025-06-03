@@ -33,8 +33,8 @@ export function AttendanceTable({
   // });
 
   const days = eachDayOfInterval({
-    start: dateRange?.from,
-    end: dateRange?.to,
+    start: dateRange!.from!,
+    end: dateRange!.to!,
   });
 
   useEffect(() => {
@@ -107,10 +107,10 @@ export function AttendanceTable({
                   return (
                     <React.Fragment key={`${teacher.id}-${day.toString()}`}>
                       <TableCell className="border px-2 py-1 text-center">
-                        {formatTime(record?.checkin)}
+                        {formatTime(record?.checkin ?? null)}
                       </TableCell>
                       <TableCell className="border px-2 py-1 text-center">
-                        {formatTime(record?.checkout)}
+                        {formatTime(record?.checkout ?? null)}
                       </TableCell>
                     </React.Fragment>
                   );
