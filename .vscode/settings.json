@@ -1,0 +1,6 @@
+{
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "symbols.files.associations": {
+    "*.service.ts": "typescript"
+  }
+}
