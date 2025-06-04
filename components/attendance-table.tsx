@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { eachDayOfInterval, format } from "date-fns";
 import { es } from "date-fns/locale";
+import { formatInTimeZone } from "date-fns-tz";
 import {
   Table,
   TableBody,
@@ -41,35 +42,15 @@ export function AttendanceTable({
     setTeachers(data ? data.data : []);
   }, [dateRange, data]);
 
-  const formatTime = (time: string | null) => (time ? time : "—");
+  const formatTime = (time: string | null) => {
+    if (!time) return "—";
+    const date = new Date(time);
+    return formatInTimeZone(date, "America/Lima", "HH:mm:ss");
+  };
   return (
     <div className="p-4 bg-white rounded-xl">
       <div className="flex justify-between items-center mb-5">
         <DatePickerWithRange />
-        {/* <div className="mb-4 flex gap-2">
-          <button
-            onClick={() =>
-              setDateRange({
-                startDate: new Date("2025-06-01"),
-                endDate: new Date("2025-06-07"),
-              })
-            }
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Semana 1 (01-07 Jun)
-          </button>
-          <button
-            onClick={() =>
-              setDateRange({
-                startDate: new Date("2025-06-10"),
-                endDate: new Date("2025-06-15"),
-              })
-            }
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          >
-            Semana 2 (10-15 Jun)
-          </button>
-        </div> */}
         <Button variant={"outline"}>
           <Plus /> Registrar Asistencia
         </Button>
@@ -81,7 +62,9 @@ export function AttendanceTable({
               <TableHead rowSpan={2}>Docente</TableHead>
               {days.map((day) => (
                 <TableHead className="border" key={day.toString()} colSpan={2}>
-                  {format(day, "dd MMMM", { locale: es })}
+                  {formatInTimeZone(day, "America/Lima", "dd MMMM", {
+                    locale: es,
+                  })}
                 </TableHead>
               ))}
             </TableRow>
