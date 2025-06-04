@@ -18,11 +18,6 @@ import { format } from "date-fns";
 export function DatePickerWithRange({
   className,
 }: React.HTMLAttributes<HTMLDivElement>) {
-  // const [date, setDate] = React.useState<DateRange | undefined>({
-  //   from: new Date(),
-  //   to: addDays(new Date(), 2),
-  // });
-
   const { dateRange: date, setDateRange } = useAttendanceTeacherStore();
   return (
     <div className={cn("grid gap-2", className)}>
@@ -57,7 +52,11 @@ export function DatePickerWithRange({
             mode="range"
             defaultMonth={date?.from}
             selected={date}
-            onSelect={setDateRange}
+            onSelect={(range) => {
+              if (range?.from && range?.to) {
+                setDateRange(range);
+              }
+            }}
             numberOfMonths={2}
             locale={es}
           />

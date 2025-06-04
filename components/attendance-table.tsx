@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { eachDayOfInterval, format } from "date-fns";
 import { es } from "date-fns/locale";
-import { formatInTimeZone } from "date-fns-tz";
+
 import {
   Table,
   TableBody,
@@ -19,6 +19,8 @@ import {
 } from "@/types/attendance";
 import { DatePickerWithRange } from "./date-picker-range";
 import { useAttendanceTeacherStore } from "@/store/attendance.store";
+import { formatInTimeZone } from "date-fns-tz";
+import { formatTimeInLima } from "@/lib/timezone";
 
 export function AttendanceTable({
   data,
@@ -28,25 +30,26 @@ export function AttendanceTable({
   const [teachers, setTeachers] = useState<TeacherWithAttendance[]>([]);
   const { dateRange } = useAttendanceTeacherStore();
 
-  // const params = new URLSearchParams({
-  //   startDate: format(dateRange.startDate, "yyyy-MM-dd"),
-  //   endDate: format(dateRange.endDate, "yyyy-MM-dd"),
-  // });
-
-  const days = eachDayOfInterval({
-    start: dateRange!.from!,
-    end: dateRange!.to!,
-  });
+  const formatTime = (value: string | null | undefined) =>
+    value ? formatInTimeZone(new Date(value), "America/Lima", "HH:mm") : "--";
 
   useEffect(() => {
     setTeachers(data ? data.data : []);
   }, [dateRange, data]);
 
-  const formatTime = (time: string | null) => {
-    if (!time) return "—";
-    const date = new Date(time);
-    return formatInTimeZone(date, "America/Lima", "HH:mm:ss");
-  };
+  if (!dateRange || !dateRange.from || !dateRange.to) {
+    return (
+      <div className="p-4 text-center">
+        Seleccione un rango de fechas válido
+      </div>
+    );
+  }
+
+  const days = eachDayOfInterval({
+    start: dateRange.from,
+    end: dateRange.to,
+  });
+
   return (
     <div className="p-4 bg-white rounded-xl">
       <div className="flex justify-between items-center mb-5">
@@ -61,10 +64,12 @@ export function AttendanceTable({
             <TableRow className="max-w-48 ">
               <TableHead rowSpan={2}>Docente</TableHead>
               {days.map((day) => (
-                <TableHead className="border" key={day.toString()} colSpan={2}>
-                  {formatInTimeZone(day, "America/Lima", "dd MMMM", {
-                    locale: es,
-                  })}
+                <TableHead
+                  className="border text-center"
+                  key={day.toString()}
+                  colSpan={2}
+                >
+                  {format(day, "dd MMMM", { locale: es })}
                 </TableHead>
               ))}
             </TableRow>
@@ -85,15 +90,18 @@ export function AttendanceTable({
                 </TableCell>
                 {days.map((day) => {
                   const record = teacher.attendanceRecords.find(
-                    (r) => r.date === format(day, "yyyy-MM-dd")
+                    (r) =>
+                      format(new Date(r.date), "yyyy-MM-dd") ===
+                      format(day, "yyyy-MM-dd")
                   );
+
                   return (
-                    <React.Fragment key={`${teacher.id}-${day.toString()}`}>
+                    <React.Fragment key={`${teacher.id}-${day.toISOString()}`}>
                       <TableCell className="border px-2 py-1 text-center">
-                        {formatTime(record?.checkin ?? null)}
+                        {formatTimeInLima(record?.checkin)}
                       </TableCell>
                       <TableCell className="border px-2 py-1 text-center">
-                        {formatTime(record?.checkout ?? null)}
+                        {formatTimeInLima(record?.checkout)}
                       </TableCell>
                     </React.Fragment>
                   );
