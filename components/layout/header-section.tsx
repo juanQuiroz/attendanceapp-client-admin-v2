@@ -10,7 +10,7 @@ interface HeaderSectionProps {
 
 const HeaderSection = ({ title, iconName, tabs }: HeaderSectionProps) => {
   return (
-    <div className="flex justify-between items-center mb-5 w-full">
+    <div className="flex justify-between items-center mb-16 w-full">
       <div className="flex items-center gap-3 text-slate-800">
         <Icon icon={iconName} width={34} className="text-blue-600" />
         <h1 className={`${inter.className} text-3xl`}>{title}</h1>
