@@ -91,19 +91,29 @@ export function AttendanceTable({
                   {teacher.fullName}
                 </TableCell>
                 {days.map((day) => {
-                  const record = teacher.attendanceRecords.find(
-                    (r) =>
-                      format(new Date(r.date), "yyyy-MM-dd") ===
+                  const record = teacher.attendanceRecords.find((r) => {
+                    if (!r.date) return false;
+
+                    const recordDate = new Date(r.date);
+                    if (isNaN(recordDate.getTime())) return false;
+
+                    return (
+                      format(recordDate, "yyyy-MM-dd") ===
                       format(day, "yyyy-MM-dd")
-                  );
+                    );
+                  });
 
                   return (
                     <React.Fragment key={`${teacher.id}-${day.toISOString()}`}>
                       <TableCell className="border px-2 py-1 text-center">
-                        {formatTimeInLima(record?.checkin)}
+                        {record?.checkin
+                          ? formatTimeInLima(record.checkin)
+                          : "--"}
                       </TableCell>
                       <TableCell className="border px-2 py-1 text-center">
-                        {formatTimeInLima(record?.checkout)}
+                        {record?.checkout
+                          ? formatTimeInLima(record.checkout)
+                          : "--"}
                       </TableCell>
                     </React.Fragment>
                   );
