@@ -8,7 +8,7 @@ function AttendanceTeachersPage() {
 
   return (
     <>
-      <AttendanceTable data={attendaceTeachers} />
+      {attendaceTeachers ? <AttendanceTable data={attendaceTeachers} /> : null}
     </>
   );
 }
