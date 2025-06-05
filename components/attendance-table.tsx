@@ -58,16 +58,20 @@ export function AttendanceTable({
       <div className="overflow-hidden rounded-xl border">
         <Table className="w-full table-auto border-collapse ">
           <TableHeader className="bg-slate-50 border-b-2 ">
-            <TableRow className="max-w-48 ">
-              <TableHead rowSpan={2} className="font-bold">
+            <TableRow className="max-w-48">
+              <TableHead rowSpan={2} className="font-bold text-slate-700 px-4">
                 Docente
               </TableHead>
               {days.map((day) => (
                 <TableHead
-                  className="border text-center font-bold"
+                  className="border text-center font-bold text-slate-700 py-1"
                   key={day.toString()}
                   colSpan={2}
                 >
+                  <span className="text-xs">
+                    {format(day, "EEEE", { locale: es })}
+                  </span>{" "}
+                  <br />
                   {format(day, "dd MMMM", { locale: es })}
                 </TableHead>
               ))}
@@ -75,8 +79,12 @@ export function AttendanceTable({
             <TableRow>
               {days.map((day) => (
                 <React.Fragment key={day.toString()}>
-                  <TableHead className="border w-min">Entrada</TableHead>
-                  <TableHead className="border w-min">Salida</TableHead>
+                  <TableHead className="border w-min text-slate-600 text-center">
+                    Entrada
+                  </TableHead>
+                  <TableHead className="border w-min text-slate-600 text-center ">
+                    Salida
+                  </TableHead>
                 </React.Fragment>
               ))}
             </TableRow>
