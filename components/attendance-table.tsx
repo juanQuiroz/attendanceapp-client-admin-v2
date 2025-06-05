@@ -30,8 +30,8 @@ export function AttendanceTable({
   const [teachers, setTeachers] = useState<TeacherWithAttendance[]>([]);
   const { dateRange } = useAttendanceTeacherStore();
 
-  const formatTime = (value: string | null | undefined) =>
-    value ? formatInTimeZone(new Date(value), "America/Lima", "HH:mm") : "--";
+  // const formatTime = (value: string | null | undefined) =>
+  //   value ? formatInTimeZone(new Date(value), "America/Lima", "HH:mm") : "--";
 
   useEffect(() => {
     setTeachers(data ? data.data : []);
@@ -46,8 +46,8 @@ export function AttendanceTable({
   }
 
   const days = eachDayOfInterval({
-    start: dateRange.from,
-    end: dateRange.to,
+    start: dateRange?.from,
+    end: dateRange?.to,
   });
 
   return (
@@ -106,10 +106,14 @@ export function AttendanceTable({
                   return (
                     <React.Fragment key={`${teacher.id}-${day.toISOString()}`}>
                       <TableCell className="border px-2 py-1 text-center">
-                        {record?.checkin ? formatTime(record.checkin) : "--"}
+                        {record?.checkin
+                          ? formatTimeInLima(record.checkin)
+                          : "--"}
                       </TableCell>
                       <TableCell className="border px-2 py-1 text-center">
-                        {record?.checkout ? formatTime(record.checkout) : "--"}
+                        {record?.checkout
+                          ? formatTimeInLima(record.checkout)
+                          : "--"}
                       </TableCell>
                     </React.Fragment>
                   );
