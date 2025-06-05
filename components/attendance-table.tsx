@@ -106,14 +106,10 @@ export function AttendanceTable({
                   return (
                     <React.Fragment key={`${teacher.id}-${day.toISOString()}`}>
                       <TableCell className="border px-2 py-1 text-center">
-                        {record?.checkin
-                          ? formatTimeInLima(record.checkin)
-                          : "--"}
+                        {record?.checkin ? formatTime(record.checkin) : "--"}
                       </TableCell>
                       <TableCell className="border px-2 py-1 text-center">
-                        {record?.checkout
-                          ? formatTimeInLima(record.checkout)
-                          : "--"}
+                        {record?.checkout ? formatTime(record.checkout) : "--"}
                       </TableCell>
                     </React.Fragment>
                   );
