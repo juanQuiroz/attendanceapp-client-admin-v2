@@ -30,9 +30,6 @@ export function AttendanceTable({
   const [teachers, setTeachers] = useState<TeacherWithAttendance[]>([]);
   const { dateRange } = useAttendanceTeacherStore();
 
-  // const formatTime = (value: string | null | undefined) =>
-  //   value ? formatInTimeZone(new Date(value), "America/Lima", "HH:mm") : "--";
-
   useEffect(() => {
     setTeachers(data ? data.data : []);
   }, [dateRange, data]);
@@ -94,13 +91,17 @@ export function AttendanceTable({
                   const record = teacher.attendanceRecords.find((r) => {
                     if (!r.date) return false;
 
-                    const recordDate = new Date(r.date);
-                    if (isNaN(recordDate.getTime())) return false;
+                    try {
+                      const recordDate = new Date(r.date);
+                      if (!isFinite(recordDate.getTime())) return false;
 
-                    return (
-                      format(recordDate, "yyyy-MM-dd") ===
-                      format(day, "yyyy-MM-dd")
-                    );
+                      return (
+                        format(recordDate, "yyyy-MM-dd") ===
+                        format(day, "yyyy-MM-dd")
+                      );
+                    } catch (e) {
+                      return false;
+                    }
                   });
 
                   return (
