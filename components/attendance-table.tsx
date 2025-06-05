@@ -62,10 +62,12 @@ export function AttendanceTable({
         <Table className="w-full table-auto border-collapse ">
           <TableHeader className="bg-slate-50 border-b-2 ">
             <TableRow className="max-w-48 ">
-              <TableHead rowSpan={2}>Docente</TableHead>
+              <TableHead rowSpan={2} className="font-bold">
+                Docente
+              </TableHead>
               {days.map((day) => (
                 <TableHead
-                  className="border text-center"
+                  className="border text-center font-bold"
                   key={day.toString()}
                   colSpan={2}
                 >
