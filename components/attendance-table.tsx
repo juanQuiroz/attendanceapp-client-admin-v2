@@ -19,7 +19,6 @@ import {
 } from "@/types/attendance";
 import { DatePickerWithRange } from "./date-picker-range";
 import { useAttendanceTeacherStore } from "@/store/attendance.store";
-import { formatInTimeZone } from "date-fns-tz";
 import { formatTimeInLima } from "@/lib/timezone";
 
 export function AttendanceTable({
@@ -72,7 +71,9 @@ export function AttendanceTable({
                     {format(day, "EEEE", { locale: es })}
                   </span>{" "}
                   <br />
-                  {format(day, "dd MMMM", { locale: es })}
+                  <span className="text-md font-bold">
+                    {format(day, "dd MMMM", { locale: es })}
+                  </span>
                 </TableHead>
               ))}
             </TableRow>
@@ -92,36 +93,41 @@ export function AttendanceTable({
           <TableBody>
             {teachers.map((teacher) => (
               <TableRow key={teacher.id}>
-                <TableCell className="border px-4 py-2 font-medium">
+                <TableCell className="border px-4 py-2 font-medium hover:cursor-pointer hover:text-blue-500">
                   {teacher.fullName}
                 </TableCell>
                 {days.map((day) => {
-                  const record = teacher.attendanceRecords.find((r) => {
+                  const records = teacher.attendanceRecords.filter((r) => {
                     if (!r.date) return false;
-
                     try {
                       const recordDate = new Date(r.date);
-                      if (!isFinite(recordDate.getTime())) return false;
-
                       return (
                         format(recordDate, "yyyy-MM-dd") ===
                         format(day, "yyyy-MM-dd")
                       );
-                    } catch (e) {
+                    } catch {
                       return false;
                     }
                   });
 
                   return (
                     <React.Fragment key={`${teacher.id}-${day.toISOString()}`}>
-                      <TableCell className="border px-2 py-1 text-center">
-                        {record?.checkin
-                          ? formatTimeInLima(record.checkin)
+                      <TableCell className="border px-2 py-1 text-center whitespace-pre-line">
+                        {records.length > 0
+                          ? records
+                              .map((r) =>
+                                r.checkin ? formatTimeInLima(r.checkin) : "--"
+                              )
+                              .join("\n")
                           : "--"}
                       </TableCell>
-                      <TableCell className="border px-2 py-1 text-center">
-                        {record?.checkout
-                          ? formatTimeInLima(record.checkout)
+                      <TableCell className="border px-2 py-1 text-center whitespace-pre-line">
+                        {records.length > 0
+                          ? records
+                              .map((r) =>
+                                r.checkout ? formatTimeInLima(r.checkout) : "--"
+                              )
+                              .join("\n")
                           : "--"}
                       </TableCell>
                     </React.Fragment>
