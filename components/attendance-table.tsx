@@ -19,7 +19,7 @@ import {
 } from "@/types/attendance";
 import { DatePickerWithRange } from "./date-picker-range";
 import { useAttendanceTeacherStore } from "@/store/attendance.store";
-import { formatTimeInLima } from "@/lib/timezone";
+import { formatDateInLima, formatTimeInLima } from "@/lib/timezone";
 
 export function AttendanceTable({
   data,
@@ -97,17 +97,22 @@ export function AttendanceTable({
                   {teacher.fullName}
                 </TableCell>
                 {days.map((day) => {
+                  // const records = teacher.attendanceRecords.filter((r) => {
+                  //   if (!r.date) return false;
+                  //   try {
+                  //     const recordDate = new Date(r.date);
+                  //     return (
+                  //       format(recordDate, "yyyy-MM-dd") ===
+                  //       format(day, "yyyy-MM-dd")
+                  //     );
+                  //   } catch {
+                  //     return false;
+                  //   }
+
                   const records = teacher.attendanceRecords.filter((r) => {
-                    if (!r.date) return false;
-                    try {
-                      const recordDate = new Date(r.date);
-                      return (
-                        format(recordDate, "yyyy-MM-dd") ===
-                        format(day, "yyyy-MM-dd")
-                      );
-                    } catch {
-                      return false;
-                    }
+                    return (
+                      formatDateInLima(r.date) === format(day, "yyyy-MM-dd")
+                    );
                   });
 
                   return (

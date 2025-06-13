@@ -5,10 +5,6 @@ import React from "react";
 
 function AttendanceTeachersPage() {
   const { data: attendaceTeachers } = useAttendanceTeachers();
-  console.log(
-    "🚀 ~ AttendanceTeachersPage ~ attendaceTeachers:",
-    attendaceTeachers
-  );
 
   return (
     <>
