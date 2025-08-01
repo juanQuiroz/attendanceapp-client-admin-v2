@@ -131,7 +131,22 @@ function AttendanceTeachersPage() {
                             ))
                           : "--"}
                       </TableCell>
-                      <TableCell className="border px-2 py-1 text-center hover:cursor-pointer hover:text-blue-500">
+                      <TableCell
+                        className="border px-2 py-1 text-center hover:cursor-pointer hover:text-blue-500"
+                        onClick={() => {
+                          const attendanceData =
+                            teacher.attendanceRecords.filter((r) => {
+                              return (
+                                formatDateInLima(r.date) ===
+                                format(day, "yyyy-MM-dd")
+                              );
+                            });
+                          setAttendanceData(
+                            attendanceData ? attendanceData : undefined
+                          );
+                          setOpenSheet(true);
+                        }}
+                      >
                         {records.length > 0
                           ? records.map((r, i) => (
                               <div key={i}>
