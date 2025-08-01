@@ -1,4 +1,5 @@
 export type AttendanceRecord = {
+  id: string;
   date: string; // "2025-06-01"
   checkin: string | null;
   checkout: string | null;
@@ -18,4 +19,9 @@ export type AttendanceTeacherResponse = {
   meta: {
     total: number;
   };
+};
+
+export type AttendanceTimes = {
+  checkin: string | null;
+  checkout: string | null;
 };

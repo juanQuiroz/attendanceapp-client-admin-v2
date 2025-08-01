@@ -13,7 +13,7 @@ export function formatTimeInLima(
 ): string {
   const zonedDate = parseUtcToLimaDate(utcDateStr);
   if (!zonedDate) return "--";
-  return formatInTimeZone(zonedDate, "America/Lima", "HH:mm");
+  return formatInTimeZone(zonedDate, "America/Lima", "p");
 }
 
 export function formatDateInLima(

@@ -1,8 +1,7 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { eachDayOfInterval, format } from "date-fns";
-import { es } from "date-fns/locale";
-
+import { DatePickerWithRange } from "@/components/date-picker-range";
+import SheetEditAttendance from "@/components/sheet-edit-attendance";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -11,23 +10,23 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Button } from "./ui/button";
-import { Plus } from "lucide-react";
-import {
-  AttendanceTeacherResponse,
-  TeacherWithAttendance,
-} from "@/types/attendance";
-import { DatePickerWithRange } from "./date-picker-range";
-import { useAttendanceTeacherStore } from "@/store/attendance.store";
+import { useAttendanceTeachers } from "@/hooks/queries/use-attendance";
 import { formatDateInLima, formatTimeInLima } from "@/lib/timezone";
+import { useAttendanceTeacherStore } from "@/store/attendance.store";
+import { AttendanceRecord, TeacherWithAttendance } from "@/types/attendance";
+import { eachDayOfInterval, format } from "date-fns";
+import { es } from "date-fns/locale";
+import { Plus } from "lucide-react";
+import React, { useEffect, useState } from "react";
 
-export function AttendanceTable({
-  data,
-}: {
-  data?: AttendanceTeacherResponse;
-}) {
+function AttendanceTeachersPage() {
+  const { data } = useAttendanceTeachers();
+
   const [teachers, setTeachers] = useState<TeacherWithAttendance[]>([]);
   const { dateRange } = useAttendanceTeacherStore();
+
+  const [openSheet, setOpenSheet] = useState(false);
+  const [attendanceData, setAttendanceData] = useState<AttendanceRecord[]>();
 
   useEffect(() => {
     setTeachers(data ? data.data : []);
@@ -48,6 +47,11 @@ export function AttendanceTable({
 
   return (
     <div className="p-4 bg-white rounded-xl">
+      <SheetEditAttendance
+        openSheet={openSheet}
+        setOpenSheet={setOpenSheet}
+        attendanceData={attendanceData}
+      />
       <div className="flex justify-between items-center mb-5">
         <DatePickerWithRange />
         <Button variant={"outline"}>
@@ -105,33 +109,29 @@ export function AttendanceTable({
 
                   return (
                     <React.Fragment key={`${teacher.id}-${day.toISOString()}`}>
-                      {/* <TableCell className="border px-2 py-1 text-center whitespace-pre-line">
-                        {records.length > 0
-                          ? records
-                              .map((r) =>
-                                r.checkin ? formatTimeInLima(r.checkin) : "--"
-                              )
-                              .join("\n")
-                          : "--"}
-                      </TableCell>
-                      <TableCell className="border px-2 py-1 text-center whitespace-pre-line">
-                        {records.length > 0
-                          ? records
-                              .map((r) =>
-                                r.checkout ? formatTimeInLima(r.checkout) : "--"
-                              )
-                              .join("\n")
-                          : "--"}
-                      </TableCell> */}
-
-                      <TableCell className="border px-2 py-1 text-center">
+                      <TableCell
+                        className="border px-2 py-1 text-center hover:cursor-pointer hover:text-blue-500"
+                        onClick={() => {
+                          const attendanceData =
+                            teacher.attendanceRecords.filter((r) => {
+                              return (
+                                formatDateInLima(r.date) ===
+                                format(day, "yyyy-MM-dd")
+                              );
+                            });
+                          setAttendanceData(
+                            attendanceData ? attendanceData : undefined
+                          );
+                          setOpenSheet(true);
+                        }}
+                      >
                         {records.length > 0
                           ? records.map((r, i) => (
                               <div key={i}>{formatTimeInLima(r.checkin)}</div>
                             ))
                           : "--"}
                       </TableCell>
-                      <TableCell className="border px-2 py-1 text-center">
+                      <TableCell className="border px-2 py-1 text-center hover:cursor-pointer hover:text-blue-500">
                         {records.length > 0
                           ? records.map((r, i) => (
                               <div key={i}>
@@ -153,3 +153,5 @@ export function AttendanceTable({
     </div>
   );
 }
+
+export default AttendanceTeachersPage;
